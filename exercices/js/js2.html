@@ -8,17 +8,31 @@ function boucle(iPeriode,fnCbTraitement,fnCbContinuer) {
 	// Objectif : déclencher un appel à la fonction fnCbTraitement
 	// toutes les iPeriode secondes, 
 	// tant que fnCbContinuer renvoie vrai
+	
+	var foo = function () {
+		// iPeriode,fnCbTraitement,fnCbContinuer 
+		// sont dans le scope de foo
+		if (	(fnCbContinuer==undefined) || fnCbContinuer()	) {
+			fnCbTraitement(); 
+			window.setTimeout(foo, iPeriode * 1000);
+		}
+	}
+	
+	foo();
 
-	// fnCbTraitement est une fonction de rappel ("CALLBACK")
-	// elle sera appelée plus tard
-	// pour l'appeler, il suffit d'ajouter les parenthèses !
-
-	// rendre le 3ème argument optionnel
-
+/*
+	if (	(fnCbContinuer==undefined) || fnCbContinuer()	) {
+		fnCbTraitement(); 
+		// window.setTimeout(boucle, iPeriode * 1000,iPeriode,fnCbTraitement,fnCbContinuer); 
+		// OK, mais on ne veut pas utiliser les arguments supplémentaires 
+		window.setTimeout(boucle, iPeriode * 1000);
+ }
+ */
+ 
 }
 
-compteur=5; 
-boucle(	5, 
+compteur=0; 
+boucle(	1, 
 				function(){
 					trace("message");
 				}, 
@@ -33,6 +47,33 @@ function afficherMessage2(){
 }
 
 boucle(2, afficherMessage2); // surtout pas  afficherMessage2() !!
+
+// Il est délicat de rendre tous les arguments optionnels 
+// SI on utilise une liste d'arguments 
+
+// TODO : on utilise des objets pour passer les arguments 
+// Un objet oConfig qui pourra contenir des propriétés spécifiant le comportant souhaité ou pas 
+// dans ce cas, on utilisera un objet par défaut 
+// Un objet est une association nom/valeur : plus d'ambiguité 
+
+var oDefault = {
+	periode : 5, 
+	traiter : function () {trace("traitement");}, 
+	continuer : function () {return true;}
+}
+function boucleV2(oConfig) {
+
+	// ?? 
+}
+
+boucleV2({}); 
+boucleV2({periode:1});
+boucleV2({traiter : function(){tracer("t2")}});
+boucleV2({traiter : function(){tracer("t3")}, periode:3});
+ 
+
+
+
 </script>
 </head>
 <body>
