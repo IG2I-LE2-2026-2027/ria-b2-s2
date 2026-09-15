@@ -31,6 +31,7 @@ function boucle(iPeriode,fnCbTraitement,fnCbContinuer) {
  
 }
 
+/*
 compteur=0; 
 boucle(	1, 
 				function(){
@@ -47,6 +48,7 @@ function afficherMessage2(){
 }
 
 boucle(2, afficherMessage2); // surtout pas  afficherMessage2() !!
+*/
 
 // Il est délicat de rendre tous les arguments optionnels 
 // SI on utilise une liste d'arguments 
@@ -62,9 +64,60 @@ var oDefault = {
 	continuer : function () {return true;}
 }
 
-function boucleV2(oConfig) {
+function enrichir(oDefault, oModif) {
+	// renvoie un nouvel objet en ayant complété les propriétés absentes de l’objet de configuration par les valeurs de l’objet par défaut
+	
+	var oRes = {}; 
+	// parcourir toutes les propriétés de oDefault
+	// et les insérer dans oRes
+	// avec pour valeur celles de oModif si elles existent
+	// de oDefault sinon 
+	
+	for( nomProp in oDefault) {
+		if (oModif[nomProp] != undefined) 
+			oRes[nomProp] = oModif[nomProp]; 
+		else 
+			oRes[nomProp] = oDefault[nomProp];
+	}
+	
+	return oRes; 
+}
 
-	// ?? 
+function boucleV2(oConfig) {
+	// 1) traitement des arguments et la production d'arguments effectifs
+	
+	/*
+	var oParamsEffectifs = oDefault;  
+	// ceci n'est pas une copie, c'est une prise de référence !! 
+	// qui revient à donner un second nom à l'espace mémoire oDefault
+	
+	// on voudrait faire un clonage 
+	// il existe deux types de copies pour les objets : superficielle (shallow copy) et profonde (deep copy).
+	// const clone = Object.assign({}, original);
+	// superficiel 
+	// const clone = JSON.parse(JSON.stringify(original));
+	// superficiel 
+	// ne fonctionne pas avec les méthodes 
+	
+	// jQuery propose une méthode de clonage profond 
+	
+	if (oConfig.periode != undefined) oParamsEffectifs.periode = oConfig.periode; 
+	if (oConfig.traiter != undefined) oParamsEffectifs.traiter = oConfig.traiter; 
+	if (oConfig.continuer != undefined) oParamsEffectifs.continuer = oConfig.continuer; 
+	
+	*/
+	var oParamsEffectifs = enrichir(oDefault,oConfig);
+	
+	
+	// 2) code qui utilise ces arguments 
+	var foo = function () {
+		if ( oParamsEffectifs.continuer()	) {
+			oParamsEffectifs.traiter(); 
+			window.setTimeout(foo, oParamsEffectifs.periode * 1000);
+		}
+	}
+	foo();
+	
 }
 
 boucleV2({}); // exécute le comportement par défaut 
