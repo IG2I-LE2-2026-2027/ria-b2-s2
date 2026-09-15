@@ -137,23 +137,38 @@ dbg.trace("msg7"); // ok
 dbg.setCompteur(3); // affecte compteur
 trace(dbg.getCompteur()); // affiche compteur
 
-
-
-
 function show(refOrId,display) {
 	// affiche l'élément dont la référence ou l'id est fourni
 	// le paramètre display doit valoir block par défaut
+	
+	if (typeof refOrId == "string") 
+		refOrId = document.getElementById(refOrId);
+		
+	// if (display==undefined) display = "block";
+	
+	refOrId.style.display = (display==undefined) ? "block" : display ; 
 }
 
 function hide(refOrId) {
 	// cache l'élément dont la référence ou l'id est fourni
 	// display none 
 	// PAS visibility hidden
+	
+	if (typeof refOrId == "string") 
+		refOrId = document.getElementById(refOrId);
+		
+	refOrId.style.display = "none";
 }
 
 function html(refOrId, val) {
 	// affecte une valeur à l'élément dont la référence ou l'id est fourni; si val n'est pas fourni, on renvoie son contenu
 	// innerHTML 
+	
+	if (typeof refOrId == "string") 
+		refOrId = document.getElementById(refOrId);
+		
+	if (val == undefined) return refOrId.innerHTML; 
+	else refOrId.innerHTML = val;
 }
 
 function val(refOrId, val) {
@@ -163,5 +178,27 @@ function val(refOrId, val) {
 	// .value si champ classique 
 	// si type vaut checkbox ou radio : .checked  
 	
+	if (typeof refOrId == "string") 
+		refOrId = document.getElementById(refOrId);
+	
+	if ((refOrId.type =="radio") || (refOrId.type =="checkbox")) {
+		// champ à cocher 
+		if (val == undefined) return refOrId.checked; 
+		else refOrId.checked = val;
+	} else {
+		// champ à remplir 
+		if (val == undefined) return refOrId.value; 
+		else refOrId.value = val;
+	}
 }
 </script>
+
+
+<body>
+
+<div id="lediv"> lediv </div>
+<input type="text" id="i1" value="i1"/>
+<input type="checkbox" id="i2" />
+<input type="radio" id="i3" /> 
+
+</body>

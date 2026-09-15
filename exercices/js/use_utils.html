@@ -1,0 +1,29 @@
+<script src="utils.js">
+	// RIEN ICI 
+</script>
+
+<script>
+dbg.trace("msg1"); // affiche msg1
+dbg.trace("msg2");
+dbg.trace("msg3");
+dbg.trace("msg4");
+dbg.trace("msg5"); // ok 
+dbg.trace("msg6"); //nok
+trace(dbg.getCompteur()); // affiche compteur
+dbg.reset(); // raz compteur 
+trace(dbg.getCompteur()); // affiche compteur 
+dbg.trace("msg7"); // ok 
+dbg.setCompteur(3); // affecte compteur
+trace(dbg.getCompteur()); // affiche compteur
+
+</script>
+
+
+<body>
+
+<div id="lediv"> lediv </div>
+<input type="text" id="i1" value="i1"/>
+<input type="checkbox" id="i2" />
+<input type="radio" id="i3" /> 
+
+</body>
