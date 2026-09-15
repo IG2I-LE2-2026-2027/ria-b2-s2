@@ -72,12 +72,65 @@ var o = {
 };  
 */
 
+
+
+function mkVarLocale(borne_max) {
+	// borne_max est un paramètre formel 
+	// les paramètres formels sont des variables locales 
+	
+	if (borne_max == undefined) borne_max=5;
+	var compteur_interne = 0; 
+	
+	return {
+		trace : function (s) {
+			if (compteur_interne++ < borne_max) 
+				trace(s);
+		}, 
+		reset : function () {
+			compteur_interne = 0; 
+		},
+		getCompteur : function(){ 
+			return compteur_interne; 
+		}, 
+		setCompteur : function(v){
+			compteur_interne = v;
+		} 
+	}; 
+}
+
+trace("debut dbg");
+//dbg = mkVarLocale(); 
+
+
+dbg = (function (borne_max) {
+
+	if (borne_max == undefined) borne_max=5;
+	var compteur_interne = 0; 
+	
+	return {
+		trace : function (s) {
+			if (compteur_interne++ < borne_max) 
+				trace(s);
+		}, 
+		reset : function () {
+			compteur_interne = 0; 
+		},
+		getCompteur : function(){ 
+			return compteur_interne; 
+		}, 
+		setCompteur : function(v){
+			compteur_interne = v;
+		} 
+	}; 
+}) (3);
+
 dbg.trace("msg1"); // affiche msg1
 dbg.trace("msg2");
 dbg.trace("msg3");
 dbg.trace("msg4");
 dbg.trace("msg5"); // ok 
 dbg.trace("msg6"); //nok
+trace(dbg.getCompteur()); // affiche compteur
 dbg.reset(); // raz compteur 
 trace(dbg.getCompteur()); // affiche compteur 
 dbg.trace("msg7"); // ok 
