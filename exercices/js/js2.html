@@ -61,15 +61,25 @@ var oDefault = {
 	traiter : function () {trace("traitement");}, 
 	continuer : function () {return true;}
 }
+
 function boucleV2(oConfig) {
 
 	// ?? 
 }
 
-boucleV2({}); 
+boucleV2({}); // exécute le comportement par défaut 
 boucleV2({periode:1});
-boucleV2({traiter : function(){tracer("t2")}});
-boucleV2({traiter : function(){tracer("t3")}, periode:3});
+boucleV2({
+	traiter : function(){
+		trace("t2");
+	}
+});
+boucleV2({
+	traiter : function(){
+		trace("t3");
+	}, 
+	periode:3
+});
  
 
 
