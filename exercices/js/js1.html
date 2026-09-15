@@ -2,15 +2,90 @@
 
 function trace(s) {
 	// que fait cette fonction ?
-	window.console && console.log(s);
+	window.console && window.console.log(s);
+	// identique à 
+	//if (window.console) 
+	//	window.console.log(s);
 }
 
+var MAX = 5; 
+var compteur = 0; 
 function debug(s) {
-	// affiche un nombre de messages limité par un compteur
-	// affiche le compteur si s n'est pas fourni
-	// e.g. après 10 affichages, la fonction ne fait plus rien 
-	// comment remettre à 0 le compteur ?   
+	if (s == undefined) return compteur; 
+	if (compteur++ < MAX) trace(s);
 }
+
+// approche TDD : Test Driven Development
+debug("msg1"); 
+debug("msg2"); 
+debug("msg3"); 
+debug("msg4"); 
+debug("msg5"); // ok 
+
+debug("msg6"); // ne doit rien afficher 
+
+trace(debug()); // valeur du compteur    
+// raz du compteur ?? 
+compteur = 0; // var globale DANGER !!!!
+trace(debug()); // valeur du compteur 
+
+debug("msg7"); // ok 
+
+// On veut un compteur persistant entre deux appels de fonction
+// ET de portée NON GLOBALE 
+// ==> Closure / Fermeture / Enfermement 
+// Cf. exemeple 
+
+// On crée une variable locale i_foo à l'occasion de l'exécution d'une fonction foo 
+// A l'intérieur de la fonction foo, on crée un autre fonction bar que l'on va renvoyer comme valeur de retour de la fonction foo 
+// Le scope de la fonction bar contient i_foo 
+// scope : tout ce que 'voit' la fonction 
+// var. globales 
+// ses propres var. locales
+// toutes les variables qui existaient au moment de sa création : notamment i_foo 
+
+// i_foo n'est pas globale 
+// i_foo existera tant qu'il existe une référence à la fonction bar qui a 'enfermé' une référence vers i_foo dans son scope 
+
+function foo() {
+	var i_foo = 3; 
+	var  bar = function() {
+		trace("ifoo: " + i_foo++); 
+	}
+	return bar; 
+}
+
+var baar = foo(); 
+
+// TODO : fabriquer un objet dbg 
+// comportant des méthodes de débogage :
+
+/*
+var o = {
+	nom : "objet 1", 
+	methode1 : function () {
+		...
+	}, 
+	methode2 : function () {
+		...
+	}, 
+};  
+*/
+
+dbg.trace("msg1"); // affiche msg1
+dbg.trace("msg2");
+dbg.trace("msg3");
+dbg.trace("msg4");
+dbg.trace("msg5"); // ok 
+dbg.trace("msg6"); //nok
+dbg.reset(); // raz compteur 
+trace(dbg.getCompteur()); // affiche compteur 
+dbg.trace("msg7"); // ok 
+dbg.setCompteur(3); // affecte compteur
+trace(dbg.getCompteur()); // affiche compteur
+
+
+
 
 function show(refOrId,display) {
 	// affiche l'élément dont la référence ou l'id est fourni
