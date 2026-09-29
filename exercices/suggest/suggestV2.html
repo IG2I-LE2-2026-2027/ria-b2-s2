@@ -3,14 +3,34 @@
 <script src="js/ajax.js"></script>
 <script>
 function choisir(contexte) {
-	console.log(html(contexte.target));
+	val("saisie",html(contexte.target));
+	hide("suggestions");
 }
+
+function integrer(repDuServeur) {
+	html("suggestions",repDuServeur);
+	show("suggestions");
+	hide("imgLoad");
+}
+
 function saisir() {
-	console.log("saisir");
+	ajax({
+		//type:
+		url: "fixture.php",
+		//data:
+		callback:integrer
+	});
+	show("imgLoad");
 }
 
 function annuler(contexte) {
-	console.log(contexte.code);
+	if(contexte.code == "Escape") {
+		val("saisie","");
+		hide("imgLoad");
+		hide("suggestions");
+		// NOTE : il faudrait aussi annuler les requetes ajax en cours... 
+	}
+	
 }
 </script>
 <style>
@@ -29,6 +49,7 @@ function annuler(contexte) {
 	position:absolute;
 	right:7px;
 	top:2px;
+	display:none;
 }
 #suggestions{
 	position:absolute;
@@ -36,6 +57,7 @@ function annuler(contexte) {
 	border-top:0;
 	padding:0;margin:0;
 	left:0;width:248px;top:25px;
+	display:none;
 }
 #suggestions li {
 	display:block;
@@ -57,9 +79,6 @@ function annuler(contexte) {
 		<img src="ressources/ajaxLoader3.gif" id="imgLoad" />
 		
 		<ul id="suggestions" onclick="choisir(event);">
-			<li>Thibault</li>
-			<li>Thimoth&eacute;e</li>
-			<li>Thomas</li>
 		</ul>
 		
 		
