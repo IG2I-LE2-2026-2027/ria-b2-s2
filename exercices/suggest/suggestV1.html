@@ -1,17 +1,70 @@
 <head>
 <script src="js/utils.js"></script>
 <script src="js/ajax.js"></script>
+<script>
+function choisir(contexte) {
+	console.log(html(contexte.target));
+}
+function saisir() {
+	console.log("saisir");
+}
 
-<style></style>
+function annuler(contexte) {
+	console.log(contexte.code);
+}
+</script>
+<style>
+#conteneur {
+	position:relative;
+	display:inline;
+}
+#saisie {
+	width:250px;
+	height:30px;
+	padding-right:20px;
+	outline:none;
+	border:1px solid black;
+}
+#imgLoad{
+	position:absolute;
+	right:7px;
+	top:2px;
+}
+#suggestions{
+	position:absolute;
+	border:1px solid black;
+	border-top:0;
+	padding:0;margin:0;
+	left:0;width:248px;top:25px;
+}
+#suggestions li {
+	display:block;
+	padding:3px;
+}
+
+#suggestions li:hover {
+	background-color:lightgrey;
+	cursor:pointer;
+}
+</style>
 </head>
 
-<body>
+<body onkeyup="annuler(event);">
 
-Du texte ... <input type="text" id="saisie" />
-<img src="ressources/ajaxLoader3.gif" id="imgLoad" />
-<ul id="suggestions">
-	<li>Thibault</li>
-	<li>Thimoth&eacute;e</li>
-	<li>Thomas</li>
-</ul>
+	Du texte ... 
+	<div id="conteneur">
+		<input type="text" id="saisie" onkeyup="saisir();"/>
+		<img src="ressources/ajaxLoader3.gif" id="imgLoad" />
+		
+		<ul id="suggestions" onclick="choisir(event);">
+			<li>Thibault</li>
+			<li>Thimoth&eacute;e</li>
+			<li>Thomas</li>
+		</ul>
+		
+		
+	</div>
+	... apres
+
+
 </body>
