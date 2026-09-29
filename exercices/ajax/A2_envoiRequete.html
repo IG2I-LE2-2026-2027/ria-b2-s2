@@ -38,10 +38,41 @@ function traiteReponse()
 	}
 } 
 
+// comportement conventionnel ? 
+var oDefaut = {
+	type : 
+	data : 
+	callback : 
+}; 
+function ajax (strOrObject, oParams) {
+	// 1) traiter arguments : cf. typeof 
+	// oConfig = enrichir (oConventionnel, oParams) 
+
+	// 2) traiter donnees : creer un QS à partir des .data
+	// Cf. for .. in 
+	
+	
+	// 3) config request 
+	// preparer callback : cf. closure pour pouvoir accéder à l'objet XHR
+	// qui ne PEUT PLUS etre une variable globale 
+	
+	// 4) appel request.open puis requets.send  
+	
+	
+}
+
 function envoyer(refBtn)
 {
 	var type = (val(refBtn) == "envoi GET") ? "GET" : "POST";
 	envoiRequete(type,"A2_data.php","cle=" + val("cle"),traiteReponse);
+	
+	ajax("A2_data.php", {
+		type : ...,
+		data : {}, 
+		callback : function (reponseDuServeur) {
+		
+		} 
+	});
 }
 
 </script>
