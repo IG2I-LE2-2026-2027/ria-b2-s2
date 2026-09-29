@@ -38,39 +38,127 @@ function traiteReponse()
 	}
 } 
 
+
+function enrichir(oDefault, oModif) {
+	// renvoie un nouvel objet en ayant complété les propriétés absentes de l’objet de configuration par les valeurs de l’objet par défaut
+	
+	var oRes = {}; 
+	// parcourir toutes les propriétés de oDefault
+	// et les insérer dans oRes
+	// avec pour valeur celles de oModif si elles existent
+	// de oDefault sinon 
+	
+	for( nomProp in oDefault) {
+		if ( (oModif != undefined) && (oModif[nomProp] != undefined) )
+			oRes[nomProp] = oModif[nomProp]; 
+		else 
+			oRes[nomProp] = oDefault[nomProp];
+	}
+	
+	return oRes; 
+}
+
 // comportement conventionnel ? 
 var oDefaut = {
-	type : 
-	data : 
-	callback : 
+	url : false,
+	type : "GET",
+	data : {},
+	callback : function (rep) {console.log(rep);}
 }; 
 function ajax (strOrObject, oParams) {
 	// 1) traiter arguments : cf. typeof 
 	// oConfig = enrichir (oConventionnel, oParams) 
+	var oConfig ; 
+	var donnees = ""; 
+	var request; 
+	
+	// ROBUSTESSE : vérifier la présence d'au moins un argument
+	if (strOrObject == undefined) {
+		console.log("Il faut au moins un argument !");
+	}
+	
+	if (typeof strOrObject =="string") {
+		// strOrObject est forcément juste l'URL
+		// oParams n'existe pas forcément !! 
+		// créer l'objet oConfig
+		oConfig = enrichir(oDefaut, oParams); 
+		oConfig.url = strOrObject; 
+		// insérer l'url (strOrObject) dedans 
+	} else {
+		// créer l'objet oConfig
+		oConfig = enrichir(oDefaut, strOrObject);
+	}
+	
+	// ROBUSTESSE : vérifier la présence d'une URL dans oConfig
+	if (!oConfig.url) {
+		console.log("Url Absente !");
+	}
 
 	// 2) traiter donnees : creer un QS à partir des .data
 	// Cf. for .. in 
+	for (nomCle in oConfig.data) {
+		donnees += nomCle + "=" + oConfig.data[nomCle] + "&";
+	} 
+	// NOTE : un '&' traine à la fin 
 	
 	
 	// 3) config request 
 	// preparer callback : cf. closure pour pouvoir accéder à l'objet XHR
 	// qui ne PEUT PLUS etre une variable globale 
 	
-	// 4) appel request.open puis requets.send  
+	request = new XMLHttpRequest(); 
+
+	if (oConfig.type=='GET') 
+	{
+		request.open("GET", oConfig.url+"?"+donnees, true);
+		donnees=null;
+	}
+	else 
+	{
+		request.open("POST", oConfig.url, true);
+		request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+	}
+
+	request.onreadystatechange = function(){
+		var reponse; 
+		
+		// dans le scope de cette fonction, on accède à request 
+		// et à oConfig !!!
+		if (request.readyState == 4) 
+		{
+			  if (request.status == 200) 
+			  {
+					reponse = request.responseText;
+					oConfig.callback(reponse);
+			  }
+		}
+	};
 	
+	
+	// 4) appel request.open puis request.send  
+	request.send(donnees);
 	
 }
 
 function envoyer(refBtn)
 {
-	var type = (val(refBtn) == "envoi GET") ? "GET" : "POST";
-	envoiRequete(type,"A2_data.php","cle=" + val("cle"),traiteReponse);
+	// envoiRequete(type,"A2_data.php","cle=" + val("cle"),traiteReponse);
 	
+	/*
 	ajax("A2_data.php", {
-		type : ...,
-		data : {}, 
+		type : (val(refBtn) == "envoi GET") ? "GET" : "POST",
+		data : {cle:val("cle")}, 
 		callback : function (reponseDuServeur) {
-		
+			html("reponse",reponseDuServeur);
+		} 
+	});*/
+	
+	ajax({
+		url : "A2_data.php", 
+		type : (val(refBtn) == "envoi GET") ? "GET" : "POST",
+		data : {cle:val("cle")}, 
+		callback : function (reponseDuServeur) {
+			html("reponse",reponseDuServeur);
 		} 
 	});
 }
