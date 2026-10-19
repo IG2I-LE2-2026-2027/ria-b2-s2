@@ -11,10 +11,38 @@ function integrer(repDuServeur) {
 	// TODO : on récupère une chaine de caractères 
 	// contenant du JSON 
 	// il faut :
-	// 1) analyser la chaine pour la transformer en objet JSON 
+	// 1) analyser la chaine pour la transformer en objet JSON
+	var oRep = JSON.parse(repDuServeur); 
+	console.log(repDuServeur); 
+	console.log(oRep);
+	 
 	// 2) parcourir l'objet pour créer la structure HTML portant les suggestions
+	var sHTML = ""; 
+	var i; 
+	for(i=0;i<oRep.suggestions.length;i++) {
+		// P. NOM
+		sHTML += "<li>" 
+			+ oRep.suggestions[i].prenom[0] 
+			+ ". " 
+			+ oRep.suggestions[i].nom
+			+ "</li>"; 
+	}
+	/*
+	{
+    "suggestions": [
+        {
+            "prenom": "Théo",
+            "nom": "LAMOTTE",
+            "id": "36 "
+        },
+
+    ],
+    "qs": "t"
+}
+	*/
+	
 	// 3) intégrer cette structure dans la page 
-	html("suggestions",repDuServeur);
+	html("suggestions",sHTML);
 	show("suggestions");
 	hide("imgLoad");
 }
