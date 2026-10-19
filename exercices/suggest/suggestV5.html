@@ -2,10 +2,16 @@
 <script src="js/utils.js"></script>
 <script src="js/ajax.js"></script>
 <script>
+
+var cache = {
+	currentSuggestions : []
+}; 
+
 function choisir(contexte) {
 	// TODO: lorsque l'on clique sur "P. Nom"
 	// la chaine Prenom N. (id) doit etre intégrée dans le champ 
-	// => utilisation d'un cache avec méta-données des suggestions affichées 
+	// => utilisation d'un cache avec les méta-données 
+	// des suggestions actuellement affichées 
 	
 	val("saisie",html(contexte.target));
 	hide("suggestions");
@@ -19,13 +25,16 @@ function integrer(repDuServeur) {
 	var oRep = JSON.parse(repDuServeur); 
 	console.log(repDuServeur); 
 	console.log(oRep);
+	
+	// garder les suggestions actuelles dans le cache : 
+	cache.currentSuggestions = oRep.suggestions ; 
 	 
 	// 2) parcourir l'objet pour créer la structure HTML portant les suggestions
 	var sHTML = ""; 
 	var i; 
 	for(i=0;i<oRep.suggestions.length;i++) {
 		// P. NOM
-		sHTML += "<li>" 
+		sHTML += '<li id="' + i + '">' 
 			+ oRep.suggestions[i].prenom[0] 
 			+ ". " 
 			+ oRep.suggestions[i].nom
