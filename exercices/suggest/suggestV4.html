@@ -1,0 +1,123 @@
+<head>
+<script src="js/utils.js"></script>
+<script src="js/ajax.js"></script>
+<script>
+function choisir(contexte) {
+	val("saisie",html(contexte.target));
+	hide("suggestions");
+}
+
+function integrer(repDuServeur) {
+	// TODO : on récupère une chaine de caractères 
+	// contenant du JSON 
+	// il faut :
+	// 1) analyser la chaine pour la transformer en objet JSON
+	var oRep = JSON.parse(repDuServeur); 
+	console.log(repDuServeur); 
+	console.log(oRep);
+	 
+	// 2) parcourir l'objet pour créer la structure HTML portant les suggestions
+	var sHTML = ""; 
+	var i; 
+	for(i=0;i<oRep.suggestions.length;i++) {
+		// P. NOM
+		sHTML += "<li>" 
+			+ oRep.suggestions[i].prenom[0] 
+			+ ". " 
+			+ oRep.suggestions[i].nom
+			+ "</li>"; 
+	}
+	/*
+	{
+    "suggestions": [
+        {
+            "prenom": "Théo",
+            "nom": "LAMOTTE",
+            "id": "36 "
+        },
+
+    ],
+    "qs": "t"
+}
+	*/
+	
+	// 3) intégrer cette structure dans la page 
+	html("suggestions",sHTML);
+	show("suggestions");
+	hide("imgLoad");
+}
+
+function saisir() {
+	ajax({
+		//type:
+		url: "data_bdd.php",
+		data: {debutNom : val("saisie") },
+		callback:integrer
+	});
+	show("imgLoad");
+}
+
+function annuler(contexte) {
+	if(contexte.code == "Escape") {
+		val("saisie","");
+		hide("imgLoad");
+		hide("suggestions");
+		// NOTE : il faudrait aussi annuler les requetes ajax en cours... 
+	}
+	
+}
+</script>
+<style>
+#conteneur {
+	position:relative;
+	display:inline;
+}
+#saisie {
+	width:250px;
+	height:30px;
+	padding-right:20px;
+	outline:none;
+	border:1px solid black;
+}
+#imgLoad{
+	position:absolute;
+	right:7px;
+	top:2px;
+	display:none;
+}
+#suggestions{
+	position:absolute;
+	border:1px solid black;
+	border-top:0;
+	padding:0;margin:0;
+	left:0;width:248px;top:25px;
+	display:none;
+}
+#suggestions li {
+	display:block;
+	padding:3px;
+}
+
+#suggestions li:hover {
+	background-color:lightgrey;
+	cursor:pointer;
+}
+</style>
+</head>
+
+<body onkeyup="annuler(event);">
+
+	Du texte ... 
+	<div id="conteneur">
+		<input type="text" id="saisie" onkeyup="saisir();"/>
+		<img src="ressources/ajaxLoader3.gif" id="imgLoad" />
+		
+		<ul id="suggestions" onclick="choisir(event);">
+		</ul>
+		
+		
+	</div>
+	... apres
+
+
+</body>
