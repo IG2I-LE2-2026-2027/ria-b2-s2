@@ -4,8 +4,8 @@
 <script>
 
 var cache = {
-	currentSuggestions : [], 
-	lastSuggestions : {}
+	currentSuggestions : [], // les suggestions actuellement affichées 
+	lastSuggestions : {}		// un dictionnaire permettant d'accéder efficacement aux suggestions associées à une chaine de recherche
 }; 
 
 function choisir(contexte) {
@@ -73,13 +73,26 @@ function integrer(repDuServeur) {
 }
 
 function saisir() {
-	ajax({
-		//type:
-		url: "data_bdd.php",
-		data: {debutNom : val("saisie") },
-		callback:integrer
-	});
-	show("imgLoad");
+	var contenu = val("saisie"); 
+	if (contenu == "") return; 
+	// TODO: ne pas déclencher de traitement si le champ n'a pas changé
+	
+	if (cache.lastSuggestions[contenu] != undefined) {
+		var fakeOJSON = {
+			suggestions : cache.lastSuggestions[contenu], 
+			qs : contenu
+		}; 
+		integrer(JSON.stringify(fakeOJSON)); // serialisation 
+	}
+	else {
+		ajax({
+			//type:
+			url: "data_bdd.php",
+			data: {debutNom : val("saisie") },
+			callback:integrer
+		});
+		show("imgLoad");
+	}
 }
 
 function annuler(contexte) {
