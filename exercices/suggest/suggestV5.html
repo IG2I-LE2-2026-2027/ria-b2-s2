@@ -4,7 +4,8 @@
 <script>
 
 var cache = {
-	currentSuggestions : []
+	currentSuggestions : [], 
+	lastSuggestions : {}
 }; 
 
 function choisir(contexte) {
@@ -13,7 +14,15 @@ function choisir(contexte) {
 	// => utilisation d'un cache avec les méta-données 
 	// des suggestions actuellement affichées 
 	
-	val("saisie",html(contexte.target));
+	var indice = contexte.target.id; 
+	var meta = cache.currentSuggestions[indice]; 
+	
+	val("saisie",	meta.prenom 
+								+ " "
+	 							+ meta.nom.substring(0,1) 
+								+ ". ("
+								+ meta.id
+								+ ")");
 	hide("suggestions");
 }
 
@@ -28,6 +37,9 @@ function integrer(repDuServeur) {
 	
 	// garder les suggestions actuelles dans le cache : 
 	cache.currentSuggestions = oRep.suggestions ; 
+	
+	// enregistrer l'association recherche/suggestions dans le cache 
+	cache.lastSuggestions[oRep.qs] = oRep.suggestions; 
 	 
 	// 2) parcourir l'objet pour créer la structure HTML portant les suggestions
 	var sHTML = ""; 
